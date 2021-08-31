@@ -12,6 +12,7 @@
 (setq phr-win32 (eq system-type 'windows-nt))
 
 ;; Startup
+(setq default-directory "w:")
 (setq inhibit-startup-message t) ;disable welcome screen
 (display-time) ;show clock in lower right
 (scroll-bar-mode -1) ;disable scroll bar
@@ -21,6 +22,10 @@
 (setq-default word-wrap t) ;enable word-wrap
 (global-auto-revert-mode) ;if editing externally, emacs will update buffers
 (add-hook 'emacs-startup-hook 'toggle-frame-fullscreen) ;start fullscreen
+(global-unset-key (kbd "C-z")) ;disable ctrl+z minimizing emacs
+(setq make-backup-files nil) ;disable spamming ~files everywhere
+(setq auto-save-default nil) ;turn off autosave
+(setq auto-save-interval 0) ;turn off autosave timer
 
 ;; UTF-8
 (setq-default buffer-file-coding-system 'utf-8-unix)
@@ -166,13 +171,17 @@
 (require 'cc-mode) ;ensure c/++ major modes
 (require 'compile) ;ensure compile funcs
 
+;; Compile
+(when phr-win32
+  (setq compile-command "w:/build.bat"))
+
 ;; Auto Complete
 (use-package auto-complete)
 (require 'auto-complete)
 (require 'auto-complete-config)
 (ac-config-default)
 
-(use-package auto-complete-c-headers)
+;(use-package auto-complete-c-headers)
 
 ;;TODO complete include paths
 ;(when phr-macos
@@ -223,17 +232,6 @@
   :init
   (corfu-global-mode))
 
-;; Flycheck & Google C Style
-(use-package flycheck
-  :ensure t
-  :init (global-flycheck-mode))
-(use-package flycheck-google-cpplint)
-(require 'flycheck-google-cpplint)
-(flycheck-add-next-checker 'c/c++-cppcheck
-			   '(warning . c/c++-googlelint))
-(use-package google-c-style)
-
-
 ;; General Key Bindings
 (use-package general)
 
@@ -264,6 +262,16 @@
  "M-<right>" 'next-buffer
  "M-<up>" 'counsel-switch-buffer
  "M-<down>" 'counsel-switch-buffer-other-window
+ "C-d" 'kill-line
+ "C-q" 'kill-ring-save
+ "C-f" 'yank
+ "M-w" 'other-window
+ "M-k" 'kill-this-buffer
+ "C-<f5>" 'compile
+ "<f5>" 'recompile
+ "M-," 'previous-error
+ "M-." 'next-error
+ "M-q" 'fill-paragraph
  )
 
 ;; General: Mode
@@ -272,8 +280,16 @@
  "C-c C-q" 'counsel-org-tag
  )
 
-;; Custom Key Bindings
-(global-set-key (kbd "C-d") 'kill-line) ;Ctrl+d Cut Line
-(global-set-key (kbd "C-f") 'yank) ;Ctrl+f Paste
-(global-set-key (kbd "M-w") 'other-window) ; alt+w : switch to other window
-(global-set-key (kbd "M-k") 'kill-this-buffer); alt+k : kill current buffer
+; c mode
+(general-def c-mode-base-map
+  "C-d" 'kill-line
+  )
+
+;; Find and Replace
+(defun phr-replace-string (FromString ToString)
+  "Replace a string without moving point."
+  (interactive "sReplace: \nsReplace: %s With: ")
+  (save-excursion
+    (replace-string FromString ToString)
+    ))
+(define-key global-map [f8] 'phr-replace-string)
