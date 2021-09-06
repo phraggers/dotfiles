@@ -70,6 +70,7 @@
 (set-face-attribute 'default nil :font "Liberation Mono" :height 110 :weight 'semibold :background "#000000") ;Default font
 (set-face-background 'linum "#000000") ;Line Number background
 (set-face-foreground 'highlight nil) ;Disable highlight override fg color
+(require 'compile)
 (set-face-attribute 'compilation-info nil :weight 'bold :foreground "green")
 (set-face-attribute 'compilation-error nil :weight 'bold :foreground "red")
 
@@ -283,9 +284,9 @@
     (replace-string FromString ToString)
     ))
 
-;; Build TODO: other platform build scripts
-(require 'cc-mode) ;ensure c/++ major modes
-(require 'compile) ;ensure compile funcs
+;; Build
+; TODO: other platform build scripts
+(require 'cc-mode)
 (when phr-win32
   (setq compile-command "w:/build.bat"))
 
