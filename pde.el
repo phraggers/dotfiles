@@ -109,8 +109,10 @@
       (insert "exit /b 0")
       (save-buffer)
       (kill-buffer)
+      (other-window)
       ))
 
+(require 'dired)
 (when phr-win32
   (if (not (file-directory-p "w:/build"))
       (dired-create-directory "w:/build"))
