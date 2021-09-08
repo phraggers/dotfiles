@@ -41,11 +41,11 @@ call %VCVarsPath% x%Arch%
 if exist build rmdir /s /q build
 
 :: output dirs
-if 'SeparateModules'=='1' (set OutputSDL2=build\SDL2) else (set OutputSDL2=build)
-if 'SeparateModules'=='1' (set OutputSDL_image=build\SDL_image) else (set OutputSDL_image=build)
-if 'SeparateModules'=='1' (set OutputSDL_mixer=build\SDL_mixer) else (set OutputSDL_mixer=build)
-if 'SeparateModules'=='1' (set OutputSDL_net=build\SDL_net) else (set OutputSDL_net=build)
-if 'SeparateModules'=='1' (set OutputSDL_ttf=build\SDL_ttf) else (set OutputSDL_ttf=build)
+if '%SeparateModules%'=='1' (set OutputSDL2=build\SDL2) else (set OutputSDL2=build)
+if '%SeparateModules%'=='1' (set OutputSDL_image=build\SDL_image) else (set OutputSDL_image=build)
+if '%SeparateModules%'=='1' (set OutputSDL_mixer=build\SDL_mixer) else (set OutputSDL_mixer=build)
+if '%SeparateModules%'=='1' (set OutputSDL_net=build\SDL_net) else (set OutputSDL_net=build)
+if '%SeparateModules%'=='1' (set OutputSDL_ttf=build\SDL_ttf) else (set OutputSDL_ttf=build)
 
 :: Get latest sources
 if not exist SDL (git clone --recursive https://github.com/libsdl-org/SDL.git) else (pushd SDL && git pull && popd)
