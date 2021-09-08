@@ -1,4 +1,4 @@
-# PDE
+## PDE (Phragware Development Environment)
 A collection of my scripts n stuff (tm)
 
 pde.el            : my emacs init file
