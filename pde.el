@@ -79,6 +79,52 @@
 (set-face-attribute 'hl-line nil :inherit nil :background "#0c0e30")
 (global-hl-line-mode 1)
 
+;;=-=-=-=-=-=-=;;
+;; Compilation ;;
+;;=-=-=-=-=-=-=;;
+
+(defun phr-create-win32-build-script ()
+    "Create build.bat if it doesn't exist"
+    (if (file-exists-p "w:/build.bat")
+	(message "build.bat exists")
+      (find-file-other-window "w:/build.bat")
+      (insert "@echo off\n\n")
+      (insert "set ProjectName=PROJECT\n\n")
+      (insert "if not exist w:\\build mkdir w:\\build\n")
+      (insert "if exist w:\\build\\%ProjectName%.exe del w:\\build\\%ProjectName%.exe\n\n")
+      (insert "set InternalDefines=-DWIN32\n")
+      (insert "set CompilerSwitches=-nologo\n")
+      (insert "set CompilerInput=w:\\src\\%ProjectName%.cpp\n")
+      (insert "set LinkerOptions=-subsystem:windows\n")
+      (insert "set LinkerLibs=user32.lib\n")
+      (insert "echo.\n")
+      (insert "echo CPPCHECK:\n")
+      (insert "cppcheck --template='{file}: {line}: {severity}: {message}' --quiet %CompilerInput%\n\n")
+      (insert "echo.\n")
+      (insert "echo MSVC:\n")
+      (insert "pushd w:\\build")
+      (insert "cl %InternalDefines% %CompilerSwitches% %CompilerInput% /link %LinkerOptions% %LinkerLibs%\n")
+      (insert "popd\n\n")
+      (insert "if not exist w:\\build\\%ProjectName%.exe exit /b 1\n")
+      (insert "exit /b 0")
+      (save-buffer)
+      (kill-buffer)
+      ))
+
+(when phr-win32
+  (if (not (file-directory-p "w:/build"))
+      (dired-create-directory "w:/build"))
+  (if (not (file-directory-p "w:/data"))
+      (dired-create-directory "w:/data"))
+  (if (not (file-directory-p "w:/src"))
+      (dired-create-directory "w:/src"))
+  (phr-create-win32-build-script))
+
+; TODO: other platform build scripts
+(require 'cc-mode)
+(when phr-win32
+  (setq compile-command "w:/build.bat"))
+
 ;=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 ;;; C-STYLE AND FUNCTIONS ;;;;
 ;=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -284,12 +330,6 @@
     (replace-string FromString ToString)
     ))
 
-;; Build
-; TODO: other platform build scripts
-(require 'cc-mode)
-(when phr-win32
-  (setq compile-command "w:/build.bat"))
-
 ;=-=-=-=-=-=-=-=-=-=
 ;;;;; PACKAGES ;;;;;
 ;=-=-=-=-=-=-=-=-=-=
@@ -383,7 +423,7 @@
   :init
   (corfu-global-mode))
 
-;; LSP Mode
+;; LSP Mode (disabled because its a bit of a pain to set up each project)
 ;(use-package lsp-mode
 ;  :init
 ;  (setq lsp-keymap-prefix "C-c l")
@@ -394,6 +434,9 @@
 
 ;(use-package lsp-ui :commands lsp-ui-mode)
 ;(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
+
+;; Magit (C-x g)
+(use-package magit)
 
 ;; General Key Bindings
 (use-package general)
