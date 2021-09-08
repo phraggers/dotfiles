@@ -1,6 +1,6 @@
 ::@echo off
 ::-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-:: AUTO UPDATE SDL2 LIBS (x64)
+:: AUTO UPDATE SDL2 LIBS (Win64-MSVC)
 :: Phragware (2021)
 ::-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
@@ -61,8 +61,11 @@ if '%SeparateModules%'=='1' (set OutputSDL_net=build\SDL_net) else (set OutputSD
 if '%SeparateModules%'=='1' (set OutputSDL_ttf=build\SDL_ttf) else (set OutputSDL_ttf=build)
 
 :: Get latest sources
-:: TODO: if there's no .git folder inside the following directories then this doesn't work, eg if someone manually created the folder beforehand. This .bat should only run in an empty directory or where it has been run before.
-:: I don't want to delete them (which would make sure this bat always works) because it could delete user data or whatever.
+:: TODO: if there's no .git folder inside the following directories then this doesn't work, 
+:: eg if someone manually created the folder beforehand. This .bat should only run in an 
+:: empty directory or where it has been run before.
+:: I don't want to delete them (which would make sure this bat always works) because 
+:: it could delete user data or whatever.
 if not exist SDL (git clone --recursive https://github.com/libsdl-org/SDL.git) else (pushd SDL && git pull && popd)
 if not exist SDL_image (git clone --recursive https://github.com/libsdl-org/SDL_image.git) else (pushd SDL_image && git pull && popd)
 if not exist SDL_mixer (git clone --recursive https://github.com/libsdl-org/SDL_mixer.git) else (pushd SDL_mixer && git pull && popd)
