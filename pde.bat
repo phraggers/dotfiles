@@ -113,11 +113,6 @@ call :_e0
 where /q emacs
 if '%errorlevel%'=='1' call :_GetEmacsMenu
 
-:: install cppcheck
-call :_e0
-where /q cppcheck
-if '%errorlevel%'=='1' call :_GetCppCheckMenu
-
 :: get pde.el
 if not exist %~dp0Programs\pde.el call :_GetEmacsInit
 
@@ -271,45 +266,15 @@ where /q emacs
 if '%errorlevel%'=='1' goto GetEmacsMenu_1
 exit /b 0
 
-::====================
-:: Get CppCheck Menu
-::====================
-:_GetCppCheckMenu
-pushd %~dp0Downloads
-echo Downloading...
-git clone https://github.com/danmar/cppcheck.git
-popd
-pushd %~dp0Downloads\cppcheck
-echo Building CppCheck...
-if not exist cppcheck.sln popd && goto GetCppCheckMenuMSBuildSLNNotExist
-REM TODO msbuild cppcheck.sln -p:Configuration=Release :: NEEDS VCVARS
-popd
-robocopy %~dp0Downloads\cppcheck\bin\ %CppCheckDir%\ /copyall /e
-goto GetCppCheckMenuEnd
-
-:GetCppCheckMenuMSBuildSLNNotExist
-echo.
-echo %FRed%Error!%SReset% Unable to find cppcheck.sln to build.
-set choice=
-set /p choice=Retry Download? (y/n): 
-if not '%choice%'=='' set choice=%choice:~0,1%
-if '%choice%'=='y' goto _GetCppCheckMenu
-if '%choice%'=='n' goto GetCppCheckMenuEnd
-echo "%choice%" is not valid, try again!
-goto GetCppCheckMenuMSBuildSLNNotExist
-
-:GetCppCheckMenuEnd
-exit /b 0
-
 ::================
 :: Get Emacs Init
 ::================
 :_GetEmacsInit
 echo Downloading PDE emacs configuration...
 pushd %~dp0Downloads
-git clone https://github.com/phraggers/dotemacs.git
+git clone https://github.com/phraggers/PDE.git
 popd
-copy %~dp0Downloads\dotemacs\pde.el %~dp0Programs\pde.el
+copy %~dp0Downloads\PDE\pde.el %~dp0Programs\pde.el
 exit /b 0
 
 ::==============
@@ -347,11 +312,6 @@ call :_e0
 where /q emacs
 if '%errorlevel%'=='0' ( echo Emacs: %FGreen%Installed!%SReset% ) else ( echo Emacs: %FRed%Not Found!%SReset% )
 
-:: CppCheck
-call :_e0
-where /q cppcheck
-if '%errorlevel%'=='0' ( echo CppCheck: %FGreen%Installed!%SReset% ) else ( echo CppCheck: %FRed%Not Found!%SReset% )
-
 echo.
 exit /b 0
 
@@ -365,7 +325,6 @@ call :_MainHeader
 call :_CheckEnvironment
 echo %FYellow% Some Commands:%SReset%
 echo %FCyan% %~n0 emacs [file]%SReset% - starts up emacs with PDE config (file optional)
-echo %FCyan% %~n0 vs [file]%SReset% - starts up Visual Studio for debugging (file optional)
 echo %FCyan% %~n0 project "name"%SReset% - Open/create project (name must be in quotes if there are spaces)
 exit /b 0
 
@@ -383,10 +342,6 @@ w:
 start "" /b %~dp0Programs\Emacs\bin\emacs.exe -q -l %~dp0Programs\pde.el %2
 exit /b 0
 
-:_Command_vs
-start "" /b devenv %2
-exit /b 0
-
 :_Command_project
 if not exist %2 mkdir %2
 subst w: %2
@@ -395,7 +350,6 @@ exit /b 0
 
 :_Commands
 if '%1'=='emacs' call :_Command_emacs %~1 %~2
-if '%1'=='vs' call :_Command_vs %~1 %~2
 if '%1'=='project' call :_Command_project %~1 %~2
 
 ::========
