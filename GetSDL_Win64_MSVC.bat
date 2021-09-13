@@ -1,4 +1,4 @@
-::@echo off
+@echo off
 ::-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 :: AUTO UPDATE SDL2 LIBS (Win64-MSVC)
 :: Phragware (2021)
