@@ -16,16 +16,23 @@
   (setq default-directory "w:"))
 (setq inhibit-startup-message t) ;disable welcome screen
 (display-time) ;show clock in lower right
-(scroll-bar-mode -1) ;disable scroll bar
-(tool-bar-mode -1) ;disable toolbar
+(if (display-graphic-p) ;when emacs window mode
+    (progn
+      (scroll-bar-mode -1) ;disable scroll bar
+      (tool-bar-mode -1) ;disable toolbar
+      (set-fringe-mode 5) ;add edge margin
+      ))
 (menu-bar-mode -1) ;disable menubar
-(set-fringe-mode 5) ;add edge margin
+
+;; Editing
 (setq-default word-wrap t) ;enable word-wrap
 (global-auto-revert-mode) ;if editing externally, emacs will update buffers
 (global-unset-key (kbd "C-z")) ;disable ctrl+z minimizing emacs
 (setq make-backup-files nil) ;disable spamming ~files everywhere
 (setq auto-save-default nil) ;turn off autosave
 (setq auto-save-interval 0) ;turn off autosave timer
+(delete-selection-mode 1) ;typed text overwrites highlighted text
+(add-hook 'write-file-hooks 'delete-trailing-whitespace) ;delete trailing whitespace on save
 
 ;; UTF-8
 (setq-default buffer-file-coding-system 'utf-8-unix)
@@ -39,7 +46,7 @@
 ;; MacOS specifics
 (when phr-macos
   (cua-mode 0) ;stop keybinds like C-x C-z etc
-  (osx-key-mode 0) ;disable mac keybinds
+  ;(osx-key-mode 0) ;disable mac keybinds
   (setq mac-command-modifier 'meta) ;enable command to be mod
   (setq mac-command-key-is-meta t) ;set Cmd to meta mod
   (setq mac-pass-command-to-system nil) ;intercept cmd key
@@ -98,10 +105,6 @@
       (insert "set LinkerOptions=\n")
       (insert "set LinkerLibs=\n")
       (insert "echo.\n")
-      (insert "echo CPPCHECK:\n")
-      (insert "cppcheck --template='{file}: {line}: {severity}: {message}' --quiet %CompilerInput%\n\n")
-      (insert "echo.\n")
-      (insert "echo MSVC:\n")
       (insert "pushd w:\\build\n")
       (insert "cl %InternalDefines% %CompilerSwitches% %CompilerInput% /link %LinkerOptions% %LinkerLibs%\n")
       (insert "popd\n\n")
@@ -332,6 +335,24 @@
     (replace-string FromString ToString)
     ))
 
+;; Windmove left/right
+; if already left, delete other windows
+; if already right, split-horizontally
+(defun phr-windmove-left()
+  (interactive)
+  (condition-case nil (windmove-left)
+    (error (delete-other-windows))))
+
+(defun phr-windmove-right()
+  (interactive)
+  (condition-case nil (windmove-right)
+    (error (split-window-horizontally))))
+
+;; open loaded config file
+(defun phr-open-loaded-config()
+  (interactive)
+  (find-file (nth 2 command-line-args)))
+
 ;=-=-=-=-=-=-=-=-=-=
 ;;;;; PACKAGES ;;;;;
 ;=-=-=-=-=-=-=-=-=-=
@@ -341,8 +362,7 @@
 			 ("org" . "https://orgmode.org/elpa/")
 			 ("elpa" . "https://elpa.gnu.org/packages/")))
 (package-initialize)
-(unless package-archive-contents
-  (package-refresh-contents))
+(package-refresh-contents)
 (unless (package-installed-p 'use-package)
   (package-install 'use-package))
 (require 'use-package)
@@ -378,12 +398,13 @@
   :diminish
   :bind (
 	 :map ivy-minibuffer-map
-	 ("TAB" . ivy-alt-done)
-	 :map ivy-switch-buffer-map
-	 ("TAB" . ivy-done)
-	 ("C-d" . ivy-switch-buffer-kill)
-	 :map ivy-reverse-i-search-map
-	 ("C-d" . ivy-reverse-i-search-kill))
+	      ("TAB" . ivy-alt-done)
+	      ("ENTER" . ivy-immediate-done)
+	      :map ivy-switch-buffer-map
+	      ("TAB" . ivy-done)
+	      ("C-d" . ivy-switch-buffer-kill)
+	      :map ivy-reverse-i-search-map
+	      ("C-d" . ivy-reverse-i-search-kill))
   :config
   (ivy-mode 1))
 
@@ -438,7 +459,14 @@
 ;(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
 
 ;; Magit (C-x g)
-(use-package magit)
+(defadvice server-ensure-safe-dir (around
+                                   my-around-server-ensure-safe-dir
+                                   activate)
+  "Ignores any errors raised from (setq )erver-ensure-safe-dir"
+  (ignore-errors ad-do-it))
+
+(use-package magit
+  :ensure t)
 
 ;; General Key Bindings
 (use-package general)
@@ -466,14 +494,14 @@
 (general-define-key
  "M-x" 'counsel-M-x
  "C-s" 'counsel-grep-or-swiper
- "M-<left>" 'previous-buffer
- "M-<right>" 'next-buffer
- "M-<up>" 'counsel-switch-buffer
- "M-<down>" 'counsel-switch-buffer-other-window
+ "M-<up>" 'previous-buffer
+ "M-<down>" 'next-buffer
+ "M-<left>" 'phr-windmove-left
+ "M-<right>" 'phr-windmove-right
  "C-d" 'kill-line
  "C-q" 'kill-ring-save
  "C-f" 'yank
- "M-w" 'other-window
+ "M-w" 'switch-to-buffer
  "M-k" 'kill-this-buffer
  "C-<f5>" 'compile
  "<f5>" 'recompile
@@ -484,6 +512,7 @@
  "M-]" 'forward-sexp
  "M-j" 'imenu
  "M-g" 'goto-line
+ "C-x <f12>" 'phr-open-loaded-config
  )
 
 ;; General: Mode

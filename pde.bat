@@ -9,8 +9,8 @@ cd /d %~dp0
 title PDE [Phragware Development Environment]
 
 :: startup
-if exist %~dp0~%~n0%~x0 goto _Commands
-if not exist %~dp0~%~n0%~x0 echo running>%~dp0~%~n0%~x0
+::if exist %~dp0~%~n0%~x0 goto _Commands
+::if not exist %~dp0~%~n0%~x0 echo running>%~dp0~%~n0%~x0
 
 :: %~dp0 this file dir
 :: %~n0 this file name
@@ -19,6 +19,10 @@ if not exist %~dp0~%~n0%~x0 echo running>%~dp0~%~n0%~x0
 :: User Directories
 :: %homedrive%%homepath% / %userprofile% eg C:\Users\prbag
 :: %appdata% eg C:\Users\prbag\AppData\Roaming
+
+:: TODO: auto find vcvars, 
+::       auto get latest version numbers
+::       auto update
 
 :: find vcvarsall
 :: pushd c:\ && dir vcvarsall* /s /p /b && popd
@@ -38,13 +42,11 @@ set EmacsVerMin=2
 :: set Directories
 set GitDir=%~dp0Programs\git
 set EmacsDir=%~dp0Programs\emacs
-set CppCheckDir=%~dp0Programs\cppcheck
 
 :: set paths
 set VSPath="C:\Program Files (x86)\Microsoft Visual Studio\%VSVer%\Community\VC\Auxiliary\Build"
 set path=%~dp0Programs\Git\bin;%path%
 set path=%~dp0Programs\Emacs\bin;%path%
-set path=%~dp0Programs\cppcheck;%path%
 set path=%~dp0;%path%
 
 :: Run batch
@@ -87,13 +89,36 @@ color 07
 set Line=echo %FDark%=%FRed%-%FGreen%=%FYellow%-%FBlue%=%FMagenta%-%FCyan%=%FWhite%-%FDark%=%FRed%-%FGreen%=%FYellow%-%FBlue%=%FMagenta%-%FCyan%=%FWhite%-%FDark%=%FRed%-%FGreen%=%FYellow%-%FBlue%=%FMagenta%-%FCyan%=%FWhite%-%FDark%=%FRed%-%FGreen%=%FYellow%-%FBlue%=%FMagenta%-%FCyan%=%FWhite%-%FDark%=%FRed%-%FGreen%=%SReset%
 exit /b 0
 
+:_RemoveStyles
+set ESC=
+set SReset=
+set SHighlight=
+set SUnderline=
+set FDark=
+set FRed=
+set FGreen=
+set FYellow=
+set FBlue=
+set FMagenta=
+set FCyan=
+set FWhite=
+set BDark=
+set BRed=
+set BGreen=
+set BYellow=
+set BBlue=
+set BMagenta=
+set BCyan=
+set BWhite=
+color
+set Line=
+exit /b 0
+
 ::====================
 :: Environment Setup
 ::====================
 :_EnvironmentSetup
 if not exist %~dp0Downloads mkdir %~dp0Downloads
-
-explorer %~dp0
 
 :: install VS
 call :_e0
@@ -116,17 +141,33 @@ if '%errorlevel%'=='1' call :_GetEmacsMenu
 :: get pde.el
 if not exist %~dp0Programs\pde.el call :_GetEmacsInit
 
-:: setup commands
-call :_PrintCommands
-
-:: command line
+:: open project, editor, debugger
 echo.
-echo %FRed%IMPORTANT: Please type 'exit' to exit, don't just close the window!%SReset%
+call :_RemoveStyles
+echo WHEN FINISHED WORKING, CLOSE EMACS LAST! (Ctrl+x, Ctrl+c)
 echo.
-call cmd
+dir /b
+echo Press [TAB] to go cycle/autocomplete existing Projects
+:chooseproject
+set choice=
+set /p choice=Project: 
+if '%choice%'=='' goto chooseproject
+if not exist %~dp0%choice% mkdir %~dp0%choice%
+subst w: %~dp0%choice%
+w:
+explorer w:
+if exist w:\build\%choice%.exe (
+	call devenv w:\build\%choice%.exe
+) else (
+	call devenv
+)
+mode 30,5
+echo DON'T CLOSE ME!
+title PDE [Loader] (Dont Close Me!)
+start "PDE [Command Prompt]" cmd
+%~dp0Programs\Emacs\bin\emacs.exe -l %~dp0Programs\pde.el
 
 :: exit
-del %~dp0~%~n0%~x0
 subst /d w:
 exit /b 0
 
@@ -315,42 +356,11 @@ if '%errorlevel%'=='0' ( echo Emacs: %FGreen%Installed!%SReset% ) else ( echo Em
 echo.
 exit /b 0
 
-::=================
-:: PrintCommands
-::=================
-:_PrintCommands
-color
-cls
-call :_MainHeader
-call :_CheckEnvironment
-echo %FYellow% Some Commands:%SReset%
-echo %FCyan% %~n0 emacs [file]%SReset% - starts up emacs with PDE config (file optional)
-echo %FCyan% %~n0 project "name"%SReset% - Open/create project (name must be in quotes if there are spaces)
-exit /b 0
-
 ::=============
 :: Clear Error
 ::=============
 :_e0
 exit /b 0
-
-::==========
-:: Commands
-::==========
-:_Command_emacs
-w:
-start "" /b %~dp0Programs\Emacs\bin\emacs.exe -q -l %~dp0Programs\pde.el %2
-exit /b 0
-
-:_Command_project
-if not exist %2 mkdir %2
-subst w: %2
-w:
-exit /b 0
-
-:_Commands
-if '%1'=='emacs' call :_Command_emacs %~1 %~2
-if '%1'=='project' call :_Command_project %~1 %~2
 
 ::========
 :: Exit
