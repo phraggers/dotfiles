@@ -118,8 +118,8 @@ popd
 robocopy %~dp0SDL2\SDL\include\ %OutputSDL2%\include\ /copyall /e /ns /nc /nfl /ndl /np /njh /njs /is
 
 :: tell MSBuild where SDL2 deps are
-set "INCLUDE=%~dp0%OutputSDL2%\include;%INCLUDE%"
-set "LIB=%~dp0%OutputSDL2%\lib;%~dp0%OutputSDL2%\bin;%LIB%"
+set "INCLUDE=%OutputSDL2%\include;%INCLUDE%"
+set "LIB=%OutputSDL2%\lib;%OutputSDL2%\bin;%LIB%"
 set UseEnv=true
 
 :: SDL_image
