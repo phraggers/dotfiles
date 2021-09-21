@@ -50,11 +50,11 @@ call %VCVarsPath% x64
 ::if exist build rmdir /s /q build
 
 :: output dirs
-if '%SeparateModules%'=='1' (set OutputSDL2=SDL2\build\SDL2) else (set OutputSDL2=SDL2\build)
-if '%SeparateModules%'=='1' (set OutputSDL_image=SDL2\build\SDL_image) else (set OutputSDL_image=SDL2\build)
-if '%SeparateModules%'=='1' (set OutputSDL_mixer=SDL2\build\SDL_mixer) else (set OutputSDL_mixer=SDL2\build)
-if '%SeparateModules%'=='1' (set OutputSDL_net=SDL2\build\SDL_net) else (set OutputSDL_net=SDL2\build)
-if '%SeparateModules%'=='1' (set OutputSDL_ttf=SDL2\build\SDL_ttf) else (set OutputSDL_ttf=SDL2\build)
+if '%SeparateModules%'=='1' (set OutputSDL2=%~dp0SDL2\build\SDL2) else (set OutputSDL2=%~dp0SDL2\build)
+if '%SeparateModules%'=='1' (set OutputSDL_image=%~dp0SDL2\build\SDL_image) else (set OutputSDL_image=%~dp0SDL2\build)
+if '%SeparateModules%'=='1' (set OutputSDL_mixer=%~dp0SDL2\build\SDL_mixer) else (set OutputSDL_mixer=%~dp0SDL2\build)
+if '%SeparateModules%'=='1' (set OutputSDL_net=%~dp0SDL2\build\SDL_net) else (set OutputSDL_net=%~dp0SDL2\build)
+if '%SeparateModules%'=='1' (set OutputSDL_ttf=%~dp0SDL2\build\SDL_ttf) else (set OutputSDL_ttf=%~dp0SDL2\build)
 
 :: Get latest sources
 :: TODO: if there's no .git folder inside the following directories then this doesn't work, 
@@ -63,63 +63,59 @@ if '%SeparateModules%'=='1' (set OutputSDL_ttf=SDL2\build\SDL_ttf) else (set Out
 :: I don't want to delete them (which would make sure this bat always works) because 
 :: it could delete user data or whatever.
 
-if not exist SDL2\SDL (
-	pushd SDL2
+if not exist %~dp0SDL2 mkdir %~dp0SDL2
+
+pushd SDL2
+
+if not exist SDL (
 	git clone --recursive https://github.com/libsdl-org/SDL.git
-	popd
 ) else (
-	pushd SDL2\SDL
+	pushd SDL
 	git pull
 	popd
 )
 
-if not exist SDL2\SDL_image (
-	pushd SDL2
+if not exist SDL_image (
 	git clone --recursive https://github.com/libsdl-org/SDL_image.git
-	popd
 ) else (
-	pushd SDL2\SDL_image
+	pushd SDL_image
 	git pull
 	popd
 )
 
-if not exist SDL2\SDL_mixer (
-	pushd SDL2
+if not exist SDL_mixer (
 	git clone --recursive https://github.com/libsdl-org/SDL_mixer.git
-	popd
 ) else (
-	pushd SDL2\SDL_mixer
+	pushd SDL_mixer
 	git pull
 	popd
 )
 
-if not exist SDL2\SDL_ttf (
-	pushd SDL2
+if not exist SDL_ttf (
 	git clone --recursive https://github.com/libsdl-org/SDL_ttf.git
-	popd
 ) else (
-	pushd SDL2\SDL_ttf
+	pushd SDL_ttf
 	git pull
 	popd
 )
 
-if not exist SDL2\SDL_net (
-	pushd SDL2
+if not exist SDL_net (
 	git clone --recursive https://github.com/libsdl-org/SDL_net.git
-	popd
 ) else (
-	pushd SDL2\SDL_net
+	pushd SDL_net
 	git pull
 	popd
 )
+
+popd
 
 :: SDL2
-msbuild SDL2\SDL\VisualC\SDL.sln -p:PlatformToolset=v%MSBuildToolset%;Configuration=Release -nologo -verbosity:minimal
-pushd SDL2\SDL\VisualC\x64
-for /r %%a in (*.lib) do xcopy "%%a" ..\..\..\%OutputSDL2%\lib\ /i /Y /C /Q
-for /r %%a in (*.dll) do xcopy "%%a" ..\..\..\%OutputSDL2%\bin\ /i /Y /C /Q
+msbuild %~dp0SDL2\SDL\VisualC\SDL.sln -p:PlatformToolset=v%MSBuildToolset%;Configuration=Release -nologo -verbosity:minimal
+pushd %~dp0SDL2\SDL\VisualC\x64
+for /r %%a in (*.lib) do xcopy "%%a" %OutputSDL2%\lib\ /i /Y /C /Q
+for /r %%a in (*.dll) do xcopy "%%a" %OutputSDL2%\bin\ /i /Y /C /Q
 popd
-robocopy SDL2\SDL\include\ %OutputSDL2%\include\ /copyall /e /ns /nc /nfl /ndl /np /njh /njs /is
+robocopy %~dp0SDL2\SDL\include\ %OutputSDL2%\include\ /copyall /e /ns /nc /nfl /ndl /np /njh /njs /is
 
 :: tell MSBuild where SDL2 deps are
 set "INCLUDE=%~dp0%OutputSDL2%\include;%INCLUDE%"
@@ -127,33 +123,33 @@ set "LIB=%~dp0%OutputSDL2%\lib;%~dp0%OutputSDL2%\bin;%LIB%"
 set UseEnv=true
 
 :: SDL_image
-msbuild SDL2\SDL_image\VisualC\SDL_image.sln -t:SDL2_image -p:PlatformToolset=v%MSBuildToolset%;Configuration=Release -nologo -verbosity:minimal
-pushd SDL2\SDL_image\VisualC\x64
-for /r %%a in (*.lib) do xcopy "%%a" ..\..\..\%OutputSDL_image%\lib\ /i /Y /C /Q
-for /r %%a in (*.dll) do xcopy "%%a" ..\..\..\%OutputSDL_image%\bin\ /i /Y /C /Q
+msbuild %~dp0SDL2\SDL_image\VisualC\SDL_image.sln -t:SDL2_image -p:PlatformToolset=v%MSBuildToolset%;Configuration=Release -nologo -verbosity:minimal
+pushd %~dp0SDL2\SDL_image\VisualC\x64
+for /r %%a in (*.lib) do xcopy "%%a" %OutputSDL_image%\lib\ /i /Y /C /Q
+for /r %%a in (*.dll) do xcopy "%%a" %OutputSDL_image%\bin\ /i /Y /C /Q
 popd
-xcopy SDL2\SDL_image\SDL_image.h %OutputSDL_image%\include\ /i /Y /C /Q
+xcopy %~dp0SDL2\SDL_image\SDL_image.h %OutputSDL_image%\include\ /i /Y /C /Q
 
 :: SDL_mixer
-msbuild SDL2\SDL_mixer\VisualC\SDL_mixer.sln -t:SDL2_mixer -p:PlatformToolset=v%MSBuildToolset%;Configuration=Release -nologo -verbosity:minimal
-pushd SDL2\SDL_mixer\VisualC\x64
-for /r %%a in (*.lib) do xcopy "%%a" ..\..\..\%OutputSDL_mixer%\lib\ /i /Y /C /Q
-for /r %%a in (*.dll) do xcopy "%%a" ..\..\..\%OutputSDL_mixer%\bin\ /i /Y /C /Q
+msbuild %~dp0SDL2\SDL_mixer\VisualC\SDL_mixer.sln -t:SDL2_mixer -p:PlatformToolset=v%MSBuildToolset%;Configuration=Release -nologo -verbosity:minimal
+pushd %~dp0SDL2\SDL_mixer\VisualC\x64
+for /r %%a in (*.lib) do xcopy "%%a" %OutputSDL_mixer%\lib\ /i /Y /C /Q
+for /r %%a in (*.dll) do xcopy "%%a" %OutputSDL_mixer%\bin\ /i /Y /C /Q
 popd
-robocopy SDL2\SDL_mixer\include\ %OutputSDL_mixer%\include\ /copyall /e /ns /nc /nfl /ndl /np /njh /njs /is
+robocopy %~dp0SDL2\SDL_mixer\include\ %OutputSDL_mixer%\include\ /copyall /e /ns /nc /nfl /ndl /np /njh /njs /is
 
 :: SDL_net (don't see the point, it hasn't been updated in 6+ years, but whatevs)
-msbuild SDL2\SDL_net\VisualC\SDL_net.sln -t:SDL2_net -p:PlatformToolset=v%MSBuildToolset%;Configuration=Release -nologo -verbosity:minimal
-pushd SDL2\SDL_net\VisualC\x64
-for /r %%a in (*.lib) do xcopy "%%a" ..\..\..\%OutputSDL_net%\lib\ /i /Y /C /Q
-for /r %%a in (*.dll) do xcopy "%%a" ..\..\..\%OutputSDL_net%\bin\ /i /Y /C /Q
+msbuild %~dp0SDL2\SDL_net\VisualC\SDL_net.sln -t:SDL2_net -p:PlatformToolset=v%MSBuildToolset%;Configuration=Release -nologo -verbosity:minimal
+pushd %~dp0SDL2\SDL_net\VisualC\x64
+for /r %%a in (*.lib) do xcopy "%%a" %OutputSDL_net%\lib\ /i /Y /C /Q
+for /r %%a in (*.dll) do xcopy "%%a" %OutputSDL_net%\bin\ /i /Y /C /Q
 popd
-xcopy SDL2\SDL_net\SDL_net.h %OutputSDL_net%\include\ /i /Y /C /Q
+xcopy %~dp0SDL2\SDL_net\SDL_net.h %OutputSDL_net%\include\ /i /Y /C /Q
 
 :: SDL_ttf
-msbuild SDL2\SDL_ttf\VisualC\SDL_ttf.sln -t:SDL2_ttf -p:PlatformToolset=v%MSBuildToolset%;Configuration=Release -nologo -verbosity:minimal
-pushd SDL2\SDL_ttf\VisualC\x64
-for /r %%a in (*.lib) do xcopy "%%a" ..\..\..\%OutputSDL_ttf%\lib\ /i /Y /C /Q
-for /r %%a in (*.dll) do xcopy "%%a" ..\..\..\%OutputSDL_ttf%\bin\ /i /Y /C /Q
+msbuild %~dp0SDL2\SDL_ttf\VisualC\SDL_ttf.sln -t:SDL2_ttf -p:PlatformToolset=v%MSBuildToolset%;Configuration=Release -nologo -verbosity:minimal
+pushd %~dp0SDL2\SDL_ttf\VisualC\x64
+for /r %%a in (*.lib) do xcopy "%%a" %OutputSDL_ttf%\lib\ /i /Y /C /Q
+for /r %%a in (*.dll) do xcopy "%%a" %OutputSDL_ttf%\bin\ /i /Y /C /Q
 popd
-xcopy SDL2\SDL_ttf\SDL_ttf.h %OutputSDL_ttf%\include\ /i /Y /C /Q
+xcopy %~dp0SDL2\SDL_ttf\SDL_ttf.h %OutputSDL_ttf%\include\ /i /Y /C /Q
