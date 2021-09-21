@@ -25,7 +25,8 @@
 (menu-bar-mode -1) ;disable menubar
 
 ;; Editing
-(setq-default word-wrap t) ;enable word-wrap
+(set-default 'truncate-lines t) ;line wrap (nil=wrap, t=dont)
+(setq-default word-wrap t) ;if using line wrap then whole words are wrapped
 (global-auto-revert-mode) ;if editing externally, emacs will update buffers
 (global-unset-key (kbd "C-z")) ;disable ctrl+z minimizing emacs
 (setq make-backup-files nil) ;disable spamming ~files everywhere
@@ -57,8 +58,6 @@
   )
 
 ;; Set Display
-(delete-other-windows) ; if refreshing init file
-(split-window-horizontally) ;horizontal split
 (global-linum-mode t) ;enable line numbers
 (setq linum-format "%3d\u007C") ;line number format
 
@@ -234,7 +233,7 @@
     (insert "/* ========================================================================\n")
     (insert "   $File:    ")
     (insert BaseFileName)
-    (insert " [Header]")
+    (insert ".h")
     (insert " $\n")
     (insert "   $Project:  $\n")
     (insert "   $Date:    ")
@@ -262,7 +261,7 @@
     (insert "/* ========================================================================\n")
     (insert "   $File:    ")
     (insert BaseFileName)
-    (insert " [Source]")
+    (insert ".c(pp)")
     (insert " $\n")
     (insert "   $Project:  $\n")
     (insert "   $Date:    ")
@@ -413,7 +412,7 @@
   (ivy-rich-mode 1))
 
 ;; Doom Modeline (and icons)
-; NOTE: when first run: M-x all-the-icons-install-fonts 
+; NOTE: when first run: M-x all-the-icons-install-fonts
 ; On windows right click each downloaded font > install
 ; also get https://dn-works.com/wp-content/uploads/2020/UFAS-Fonts/Symbola.zip
 (use-package all-the-icons)
@@ -446,18 +445,6 @@
   :init
   (corfu-global-mode))
 
-;; LSP Mode (disabled because its a bit of a pain to set up each project)
-;(use-package lsp-mode
-;  :init
-;  (setq lsp-keymap-prefix "C-c l")
-;  :hook (
-;	 (c++-mode . lsp)
-;	 (lsp-mode . lsp-enable-which-key-integration))
-;  :commands lsp)
-
-;(use-package lsp-ui :commands lsp-ui-mode)
-;(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
-
 ;; Magit (C-x g)
 (defadvice server-ensure-safe-dir (around
                                    my-around-server-ensure-safe-dir
@@ -477,18 +464,6 @@
 
 ;; GENERAL
 (require 'general)
-; ==== Global ====
-; `general-define-key' acts like `global-set-key' when :keymaps is not
-; specified (because ":keymaps 'global" is the default)
-; kbd is not necessary and arbitrary amount of key def pairs are allowed
-; ==== Mode ====
-; `general-define-key' is comparable to `define-key' when :keymaps is specified
-; NOTE: keymaps specified with :keymaps must be quoted
-; ==== Prefix ===
-; example:
-;(general-define-key
-; :prefix "C-c"
-; "a" 'org-agenda)
 
 ;; General: Global
 (general-define-key
@@ -535,6 +510,3 @@
 ; Tab
 (define-key c++-mode-map [S-tab] 'indent-for-tab-command)
 (define-key c++-mode-map [C-tab] 'indent-region)
-
-;; POST Startup (fullscreen only when emacs init is done successfully)
-(add-hook 'emacs-startup-hook 'toggle-frame-fullscreen) ;start fullscreen
