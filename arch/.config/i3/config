@@ -44,7 +44,7 @@
 
 # SETUP
 set $mod Mod4
-font pango:Liberation Mono 10
+font pango:Liberation Mono Powerline Semibold 11
 for_window [class=".*"] border pixel 3
 gaps inner 5
 gaps outer 5

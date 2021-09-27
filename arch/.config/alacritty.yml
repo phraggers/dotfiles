@@ -853,7 +853,7 @@
 
 font:
   normal:
-    family: Liberation Mono
+    family: Literation Mono Powerline
 
 env:
   RANGER_DEVICONS_SEPARATOR: " "
