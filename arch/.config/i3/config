@@ -13,6 +13,7 @@
 # mod f		Fullscreen toggle
 # mod g
 # mod h		Next window will split horizontally
+# mod l		Lock Screen
 # mod z
 # mod x
 # mod c
@@ -37,7 +38,7 @@
 # mod F
 # mod G
 # mod Z
-# mod X		Lock Screen
+# mod X
 # mod C
 # mod V
 # mod B
@@ -58,38 +59,7 @@ exec --no-startup-id nm-applet
 exec_always --no-startup-id feh --randomize --bg-fill /usr/share/pixmaps/*
 exec --no-startup-id picom -f -CGb
 
-# TODO: Audio
-# Use pactl to adjust volume in PulseAudio.
 set $refresh_i3status killall -SIGUSR1 i3status
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% && $refresh_i3status
-bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
-bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
-bindsym XF86MonBrightnessDown exec light -U 10
-bindsym XF86MonBrightnessUp exec light -A 10
-
-# KEYBINDS
-bindsym $mod+Return exec i3-sensible-terminal
-bindsym $mod+q kill
-bindsym $mod+space exec "rofi -modi drun,run -show drun -theme android_notification"
-bindsym $mod+Left focus left
-bindsym $mod+Down focus down
-bindsym $mod+Up focus up
-bindsym $mod+Right focus right
-bindsym $mod+Shift+Left move left
-bindsym $mod+Shift+Down move down
-bindsym $mod+Shift+Up move up
-bindsym $mod+Shift+Right move right
-bindsym $mod+h split h
-bindsym $mod+v split v
-bindsym $mod+f fullscreen toggle
-bindsym $mod+z layout stacking
-bindsym $mod+x layout tabbed
-bindsym $mod+c layout toggle split
-bindsym $mod+w floating toggle
-bindsym $mod+e focus mode_toggle
-#bindsym $mod+? focus parent
-#bindsym $mod+? focus child
 
 # WORKSPACES
 set $ws1 "1"
@@ -127,9 +97,6 @@ bindsym $mod+Shift+8 move container to workspace number $ws8
 bindsym $mod+Shift+9 move container to workspace number $ws9
 bindsym $mod+Shift+0 move container to workspace number $ws10
 
-bindsym $mod+Shift+c reload
-bindsym $mod+Shift+r restart
-
 mode "exit [l]ogout [r]eboot [s]hutdown" {
      bindsym l exec i3-msg exit
      bindsym r exec systemctl reboot
@@ -137,8 +104,6 @@ mode "exit [l]ogout [r]eboot [s]hutdown" {
      bindsym Escape mode "default"
      bindsym Return mode "default"
      }
-
-bindsym $mod+Shift+q mode "exit [l]ogout [r]eboot [s]hutdown"
 
 mode "resize" {
         bindsym Left resize shrink width 10 px or 10 ppt
@@ -149,8 +114,6 @@ mode "resize" {
         bindsym Escape mode "default"
         bindsym $mod+r mode "default"
 }
-
-bindsym $mod+a mode "resize"
 
 # MOVE MODE: move floating window (mouse or keyboard mode)
 mode "move" {
@@ -163,10 +126,7 @@ mode "move" {
      bindsym Escape mode "default"
 }
 
-bindsym $mod+s mode "move" focus floating
 floating_modifier $mod
-
-bindsym $mod+shift+x exec ~/.config/i3/lock.sh
 
 bar {
 	i3bar_command i3bar -t
@@ -191,3 +151,54 @@ bar {
 	position top
 	status_command /usr/bin/bumblebee-status -m deadbeef cpu memory disk -t iceberg-dark-powerline
 }
+
+# KEYBINDS
+bindsym $mod+Return exec i3-sensible-terminal
+bindsym $mod+q kill
+bindsym $mod+space exec "rofi -modi drun,run -show drun -theme android_notification"
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+bindsym $mod+h split h
+bindsym $mod+v split v
+bindsym $mod+f fullscreen toggle
+bindsym $mod+z layout stacking
+bindsym $mod+x layout tabbed
+bindsym $mod+c layout toggle split
+bindsym $mod+w floating toggle
+bindsym $mod+e focus mode_toggle
+#bindsym $mod+? focus parent
+#bindsym $mod+? focus child
+
+# Special/Media Keys
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% && $refresh_i3status
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
+bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
+bindsym XF86MonBrightnessDown exec light -U 10
+bindsym XF86MonBrightnessUp exec light -A 10
+bindsym Print exec scrot -m ~/Screenshots/$(date "+%Y%m%d_%H%M%S").jpg
+bindsym $mod+Print exec scrot -s ~/Screenshots/$(date "+%Y%m%d_%H%M%S").jpg
+#bindsym XF86Display
+bindsym XF86WLAN exec nmcli radio wifi off
+bindsym $mod+XF86WLAN exec nmcli radio wifi on
+bindsym XF86Tools exec emacs ~/.config/i3/config
+#bindsym XF86Search
+#bindsym XF86LaunchA
+#bindsym XF86Explorer
+bindsym XF86Calculator exec galculator
+bindsym XF86HomePage exec firefox
+bindsym XF86MyComputer exec thunar
+
+# Function/Script Keys
+bindsym $mod+l exec ~/.config/i3/lock.sh
+bindsym $mod+s mode "move" focus floating
+bindsym $mod+Shift+c reload
+bindsym $mod+Shift+r restart
+bindsym $mod+Shift+q mode "exit [l]ogout [r]eboot [s]hutdown"
+bindsym $mod+a mode "resize"
