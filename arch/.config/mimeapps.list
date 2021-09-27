@@ -1,0 +1,5 @@
+[Default Applications]
+x-scheme-handler/mailspring=Mailspring.desktop
+
+[Added Associations]
+application/octet-stream=emacs.desktop;

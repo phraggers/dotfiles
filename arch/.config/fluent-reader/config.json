@@ -1,0 +1,20 @@
+{
+	"useNeDB": false,
+	"version": "1.0.2",
+	"sourceGroups": [
+		{
+			"isMultiple": false,
+			"sids": [
+				0
+			]
+		},
+		{
+			"isMultiple": false,
+			"sids": [
+				1
+			]
+		}
+	],
+	"fetchInterval": 60,
+	"searchEngine": 3
+}

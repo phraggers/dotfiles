@@ -1,0 +1,3 @@
+2021/09/27-03:24:13.984 1a279 Reusing MANIFEST /home/phraggers/.config/fluent-reader/IndexedDB/file__0.indexeddb.leveldb/MANIFEST-000001
+2021/09/27-03:24:13.984 1a279 Recovering log #3
+2021/09/27-03:24:13.987 1a279 Reusing old log /home/phraggers/.config/fluent-reader/IndexedDB/file__0.indexeddb.leveldb/000003.log 

@@ -1,0 +1,5 @@
+{
+  "core:delete-item": "del",
+  "core:remove-from-view": "backspace",
+  "core:gmail-remove-from-view": "backspace"
+}

@@ -1,0 +1,204 @@
+{
+  "*": {
+    "env": "production",
+    "core": {
+      "themes": [
+        "ui-light"
+      ],
+      "disabledPackages": [
+        "message-view-on-github",
+        "personal-level-indicators",
+        "phishing-detection",
+        "nylas-private-salesforce",
+        "github-contact-card",
+        "keybase",
+        "composer-markdown",
+        "composer-scheduler",
+        "composer-mail-merge",
+        "send-and-archive",
+        "main-calendar"
+      ],
+      "workspace": {
+        "mode": "split",
+        "menubarStyle": "autohide",
+        "hiddenLocations": {
+          "MessageListSidebar": {
+            "id": "MessageListSidebar",
+            "Toolbar": {
+              "id": "MessageListSidebar:Toolbar"
+            }
+          }
+        },
+        "showUnreadForAllCategories": true
+      },
+      "keymapTemplate": "Apple Mail",
+      "theme": "ui-dark",
+      "tutorial": {
+        "seen": [
+          "ThreadSearchBar",
+          "ActivityListButton",
+          "ModeToggle",
+          "ToolbarSnooze"
+        ]
+      }
+    },
+    "identity": {
+      "id": "c2f78253-a410-4061-b4b4-dddb2bd5f7cf",
+      "firstName": "Phil",
+      "lastName": "Bagshaw",
+      "emailAddress": "phil@prbagshaw.com",
+      "object": "identity",
+      "createdAt": "2021-09-26T22:53:04.000Z",
+      "stripePlan": "Basic",
+      "stripePlanEffective": "Basic",
+      "stripeCustomerId": "cus_KIhcyE9Xux2sY1",
+      "stripePeriodEnd": "2021-10-26T22:53:03.000Z",
+      "featureUsage": {
+        "snooze": {
+          "quota": 15,
+          "period": "weekly",
+          "usedInPeriod": 0,
+          "featureLimitName": "basic-limit"
+        },
+        "send-later": {
+          "quota": 5,
+          "period": "weekly",
+          "usedInPeriod": 0,
+          "featureLimitName": "basic-limit"
+        },
+        "thread-sharing": {
+          "quota": 3,
+          "period": "weekly",
+          "usedInPeriod": 0,
+          "featureLimitName": "basic-limit"
+        },
+        "link-tracking": {
+          "quota": 5,
+          "period": "weekly",
+          "usedInPeriod": 0,
+          "featureLimitName": "basic-limit"
+        },
+        "open-tracking": {
+          "quota": 5,
+          "period": "weekly",
+          "usedInPeriod": 0,
+          "featureLimitName": "basic-limit"
+        },
+        "contact-profiles": {
+          "quota": 3,
+          "period": "weekly",
+          "usedInPeriod": 0,
+          "featureLimitName": "basic-limit"
+        },
+        "send-reminders": {
+          "quota": 5,
+          "period": "weekly",
+          "usedInPeriod": 0,
+          "featureLimitName": "basic-limit"
+        },
+        "translation": {
+          "quota": 50,
+          "period": "weekly",
+          "usedInPeriod": 0,
+          "featureLimitName": "basic-limit"
+        }
+      }
+    },
+    "accounts": [
+      {
+        "id": "04e327ec",
+        "metadata": [],
+        "name": "Phil Bagshaw",
+        "provider": "gmail",
+        "emailAddress": "phil@prbagshaw.com",
+        "settings": {
+          "imap_host": "imap.gmail.com",
+          "imap_port": 993,
+          "imap_username": "phil@prbagshaw.com",
+          "imap_security": "SSL / TLS",
+          "imap_allow_insecure_ssl": false,
+          "smtp_host": "smtp.gmail.com",
+          "smtp_port": 587,
+          "smtp_username": "phil@prbagshaw.com",
+          "smtp_security": "STARTTLS",
+          "smtp_allow_insecure_ssl": false,
+          "container_folder": "",
+          "refresh_client_id": "662287800555-0a5h4ii0e9hsbpq0mqtul7fja0jhf9uf.apps.googleusercontent.com"
+        },
+        "label": "phil@prbagshaw.com",
+        "autoaddress": {
+          "type": "bcc",
+          "value": ""
+        },
+        "aliases": [],
+        "syncState": "ok",
+        "authedAt": 1632697264.875,
+        "color": "",
+        "__cls": "Account"
+      },
+      {
+        "id": "2fcba2d9",
+        "metadata": [],
+        "name": "Phil Bagshaw",
+        "provider": "gmail",
+        "emailAddress": "philrbagshaw@gmail.com",
+        "settings": {
+          "imap_host": "imap.gmail.com",
+          "imap_port": 993,
+          "imap_username": "philrbagshaw@gmail.com",
+          "imap_security": "SSL / TLS",
+          "imap_allow_insecure_ssl": false,
+          "smtp_host": "smtp.gmail.com",
+          "smtp_port": 587,
+          "smtp_username": "philrbagshaw@gmail.com",
+          "smtp_security": "STARTTLS",
+          "smtp_allow_insecure_ssl": false,
+          "container_folder": "",
+          "refresh_client_id": "662287800555-0a5h4ii0e9hsbpq0mqtul7fja0jhf9uf.apps.googleusercontent.com"
+        },
+        "label": "philrbagshaw@gmail.com",
+        "autoaddress": {
+          "type": "bcc",
+          "value": ""
+        },
+        "aliases": [],
+        "syncState": "ok",
+        "authedAt": 1632697405.011,
+        "color": "",
+        "__cls": "Account"
+      },
+      {
+        "id": "693ebd32",
+        "metadata": [],
+        "name": "Phil Bagshaw",
+        "provider": "outlook",
+        "emailAddress": "prbagshaw@live.co.uk",
+        "settings": {
+          "imap_host": "imap-mail.outlook.com",
+          "imap_port": 993,
+          "imap_username": "prbagshaw@live.co.uk",
+          "imap_security": "SSL / TLS",
+          "imap_allow_insecure_ssl": false,
+          "smtp_host": "smtp-mail.outlook.com",
+          "smtp_port": 587,
+          "smtp_username": "prbagshaw@live.co.uk",
+          "smtp_security": "STARTTLS",
+          "smtp_allow_insecure_ssl": false,
+          "container_folder": ""
+        },
+        "label": "prbagshaw@live.co.uk",
+        "autoaddress": {
+          "type": "bcc",
+          "value": ""
+        },
+        "aliases": [],
+        "syncState": "ok",
+        "authedAt": 1632697702.215,
+        "color": "",
+        "__cls": "Account"
+      }
+    ],
+    "accountsVersion": 5,
+    "containerFolderDefault": ""
+  }
+}
